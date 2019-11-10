@@ -1,0 +1,20 @@
+# create the new disk file named kilo
+# NOTE: the program should not overwrite an existing file with "n";
+#       you must manually rm the file before rerunning this script
+c 128 256 n kilo
+
+# write some strings into the first five blocks
+w 1 "I am the disk called KILO\n"
+w 2 "one fish, two fish, red fish, blue fish\n\n"
+w 3 "C"
+w 4 "D"
+w 5 "E"
+
+# write some hex data into some other blocks
+w 129 0xDEADBEEF
+w 130 0xFF
+w 131 0x01020304
+w 132 0x4445414442454546
+
+# quit the program
+q
