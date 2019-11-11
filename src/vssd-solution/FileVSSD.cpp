@@ -14,16 +14,11 @@ FileVSSD::FileVSSD(unsigned int block_size, unsigned int block_count,
     block_s = block_size;
     memcpy(k, (char*)&block_count, sizeof(block_count));
     file->write_k(1, k, block_size);
-    block_c = block_count;
-    memcpy(k, (char*)"", block_size);
-    for (size_t i = 0; i < block_count; i++) {
-      file->write_k(i + 2, k, block_size);
-    }
-    map = new WorkingBitMap(block_count);
+    block_c = block_size;
 }
 
 FileVSSD::~FileVSSD() {
-  map->~WorkingBitMap();
+
   file->~PersistentArray();
 }
 
@@ -41,9 +36,9 @@ return DiskStatus::OK;
 }
 
 DiskStatus FileVSSD::read(blocknumber_t sector, void * buffer) {
-  if (sizeof(buffer) < blockSize() && sector < blockCount() && map->get((unsigned int) sector + 2) == 1) {
-    delete (char *)buffer;
-    buffer = (void *)file->read_k(sector + 2, blockSize());
+  if (sizeof(buffer) < blockSize()){
+    free(buffer);
+    buffer = file->read_k(sector + 2, (char *)buffer, block_s);
     return DiskStatus::OK;
     }
   return DiskStatus::BLOCK_OUT_OF_RANGE;
@@ -54,12 +49,12 @@ DiskStatus FileVSSD::read(blocknumber_t sector, void * buffer) {
 
 
 DiskStatus FileVSSD::write(blocknumber_t sector, void * buffer) {
-  if (sizeof(buffer) < blockSize() && sector < blockCount()) {
-    file->write_k(sector + 2, (char *)buffer, blockSize());
-    map->set((unsigned int) sector + 2);
+  if (sector < blockCount()) {
+    file->write_k(sector + 2, (char *)buffer, block_s);
+    free(buffer);    
     return DiskStatus::OK;
    }
-  delete (char *)buffer;
+  free(buffer);
   return DiskStatus::BLOCK_OUT_OF_RANGE;
   }
 

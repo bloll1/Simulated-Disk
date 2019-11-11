@@ -29,7 +29,7 @@ public:
   //void add(const char * str);
   void write_k(size_t k, char * str, size_t blockSize);
 
-  char * read_k(size_t k, size_t blockSize);
+  char * read_k(size_t k, char * oldbuffer, size_t blockSize);
 
   void flush_stream();
 private:

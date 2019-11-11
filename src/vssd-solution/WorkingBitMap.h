@@ -11,13 +11,14 @@ class WorkingBitMap : public BitMap {
 private:
 
   // char * for storing the bit_map array
-  unsigned char * bit_map;
+
 
   // the number of entries submitted in the constructor
   unsigned int noe;
 
  public:
 
+   unsigned char * bit_map;
   // return value if no unset bits are found in the get_unset_index function
   constexpr static unsigned int nbit = 0xFFFFFFFF;
 
