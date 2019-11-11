@@ -3,15 +3,16 @@
 
 #include "VVSSD.h"
 #include "PersistentArray.h"
+#include "WorkingBitMap.h"
 #include <string>
 
 class FileVSSD
 : public VVSSD {
   public:
+    WorkingBitMap * map;
     PersistentArray * file;
     unsigned int block_s, block_c;
 
-    FileVSSD();
     FileVSSD(unsigned int block_size, unsigned int block_count,
                const std::string & filename, bool initialize);
 

@@ -66,19 +66,27 @@ PersistentArray::~PersistentArray() {
  *
  * @return the length, in records, of the persistent array.
  */
-size_t PersistentArray::length() {
+size_t PersistentArray::length(size_t blockSize) {
   stream.seekg(0, ios::end);
-  return stream.tellg() / 40;
+  return stream.tellg() / blockSize;
 }
 
-
+void PersistentArray::flush_stream() {
+  stream.flush();
+}
 
 void PersistentArray::write_k(size_t k, char * str, size_t blockSize) {
   char buffer[blockSize];
   buffer[blockSize - 1] = '\0';
+  std::cout << "blockSize: " << blockSize << '\n';
+  std::cout << "Sector: " << k << '\n';
+  std::cout << "blockSize x Sector: " << k*blockSize << '\n';
+  std::cerr << "Buffer: " << str << '\n';
   strncpy(buffer, str, blockSize - 1);
+
   stream.seekp(k*blockSize, ios::beg);
-  stream.write(buffer, 40);
+  stream.write(buffer, blockSize);
+  stream.flush();
 }
 
 /**
@@ -88,9 +96,14 @@ void PersistentArray::write_k(size_t k, char * str, size_t blockSize) {
  * @param k number of the record to fetch; [0, length] (note double closed)
  * @param char
  */
-void PersistentArray::read_k(size_t k, char * buffer, size_t blockSize) {
+char * PersistentArray::read_k(size_t k, size_t blockSize) {
   char str[blockSize];
   stream.seekg(k*blockSize, ios::beg);
   stream.read(str, blockSize);
-  buffer = str;
+
+  char * buffer = (char *)malloc(strlen(str) + 1);
+  strcpy(buffer,str);
+
+  return buffer;
+  //std::cout << "ReadBuffer: " << buffer << '\n';
 }

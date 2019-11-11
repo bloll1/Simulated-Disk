@@ -10,6 +10,7 @@
 #include "VVSSD.h"
 #include "string_util.h"
 #include "UnImplVSSD.h"
+#include "FileVSSD.h"
 
 // commented out until they are actually implemented; remove comments
 // as each type of disk is implemented
@@ -51,7 +52,7 @@ unique_ptr<VVSSD> make_disk(string dType, size_t block_size, size_t block_count,
   if (dType == "UnImplVSSD") {
     return make_unique<UnImplVSSD>(block_size, block_count, filename, truncate);
   } else if (dType == "FileVSSD") {
-    //return make_unique<FileVSSD>(block_size, block_count, filename, truncate);
+    return make_unique<FileVSSD>(block_size, block_count, filename, truncate);
   } else if (dType == "RAMVSSD") {
     //return make_unique<RAMVSSD>(block_size, block_count, filename, truncate);
   }

@@ -23,13 +23,15 @@ public:
   ~PersistentArray();
 
   // get the length (in records) of the array
-  size_t length();
+  size_t length(size_t blockSize);
 
   // add a new element at the end
   //void add(const char * str);
-  void write_k(size_t k, char * buffer, size_t blockSize);
+  void write_k(size_t k, char * str, size_t blockSize);
 
-  void read_k(size_t k, char * buffer, size_t blockSize);
+  char * read_k(size_t k, size_t blockSize);
+
+  void flush_stream();
 private:
   // the internal routines that do the real work.
 
