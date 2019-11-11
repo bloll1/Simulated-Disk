@@ -25,19 +25,15 @@ public:
   // get the length (in records) of the array
   size_t length();
 
-  // get a copy of the kth element in the array
-  char * get(size_t k);
-
-  // set the value of the kth element to the given string
-  void set(size_t k, const char * str);
-
   // add a new element at the end
-  void add(const char * str);
+  //void add(const char * str);
+  void write_k(size_t k, char * buffer, size_t blockSize);
 
+  void read_k(size_t k, char * buffer, size_t blockSize);
 private:
   // the internal routines that do the real work.
-  void read_k(size_t k, char buffer[40]);
-  void write_k(size_t k, char buffer[40]);
+
+
   // the stream
   std::fstream stream;
   size_t cached_length;

@@ -71,63 +71,13 @@ size_t PersistentArray::length() {
   return stream.tellg() / 40;
 }
 
-/**
- * Get the record at position k (on the range [0,n) for length n array). Value
- * returned is dynamically allocated C-string.
- *
- * @param k index on [0, length()) of record (string) to read.
- *
- * @return a pointer at a dynamic copy of the record at position k if
- *         k was a valid index into the persistent array; nullptr otherwise
- *
- * @note caller is responsible for freeing the memory returned from this
- *       function
- */
-char * PersistentArray::get(size_t k) {
-  cached_length = length();
-  if (k < cached_length) {
-    char buffer[40];
-    read_k(k, buffer);
-    size_t len = strlen(buffer);
-    char * retval = new char[len + 1];
-    strncpy(retval, buffer, len);
-    retval[len] = '\0';
-    return retval;
-  }
-  return nullptr;
-}
 
-/**
- * Set the record at position k (on the range [0,n) for length n array). Value
- * is truncated to 39 characters (with room for the required null char).
- *
- * @param k index on [0, length()) of record (string) to set.
- * @param str pointer at a constant C-string copied and written.
- *
- * @note caller is responsible for freeing the memory returned from this
- *       function
- */
-void PersistentArray::set(size_t k, const char * str) {
-  cached_length = length();
-  if (k < cached_length) {
-    char buffer[40];
-    buffer[39] = '\0';
-    strncpy(buffer, str, 39);
-    write_k(k, buffer);
-  }
-}
 
-// add a new element at the end
-void PersistentArray::add(const char * str) {
-  cached_length = length();
-  char buffer[40];
-  buffer[39] = '\0';
-  strncpy(buffer, str, 39);
-  write_k(length(), buffer);
-}
-
-void PersistentArray::write_k(size_t k, char buffer[40]) {
-  stream.seekp(k*40, ios::beg);
+void PersistentArray::write_k(size_t k, char * str, size_t blockSize) {
+  char buffer[blockSize];
+  buffer[blockSize - 1] = '\0';
+  strncpy(buffer, str, blockSize - 1);
+  stream.seekp(k*blockSize, ios::beg);
   stream.write(buffer, 40);
 }
 
@@ -138,7 +88,9 @@ void PersistentArray::write_k(size_t k, char buffer[40]) {
  * @param k number of the record to fetch; [0, length] (note double closed)
  * @param char
  */
-void PersistentArray::read_k(size_t k, char buffer[40]) {
-  stream.seekg(k*40, ios::beg);
-  stream.read(buffer, 40);
+void PersistentArray::read_k(size_t k, char * buffer, size_t blockSize) {
+  char str[blockSize];
+  stream.seekg(k*blockSize, ios::beg);
+  stream.read(str, blockSize);
+  buffer = str;
 }
