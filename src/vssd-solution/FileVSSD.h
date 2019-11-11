@@ -9,7 +9,6 @@
 class FileVSSD
 : public VVSSD {
   public:
-    WorkingBitMap * map;
     PersistentArray * file;
     unsigned int block_s, block_c;
 
