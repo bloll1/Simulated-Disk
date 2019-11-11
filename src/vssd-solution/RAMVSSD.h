@@ -1,20 +1,20 @@
-#ifndef FilVSSD
-#define FilVSSD
+#ifndef rammVSSD
+#define rammVSSD
 
 #include "VVSSD.h"
 #include "PersistentArray.h"
 #include <string>
 
-class FileVSSD
+class RAMVSSD
 : public VVSSD {
   public:
-    PersistentArray * file;
+    char * ram;
     unsigned int block_s, block_c;
 
-    FileVSSD(unsigned int block_size, unsigned int block_count,
+    RAMVSSD(unsigned int block_size, unsigned int block_count,
                const std::string & filename, bool initialize);
 
-    virtual ~FileVSSD();
+    virtual ~RAMVSSD();
 public:
 
 virtual std::size_t blockSize() const;
