@@ -79,7 +79,6 @@ void PersistentArray::write_k(size_t k, char * str, size_t blockSize) {
   char buffer[blockSize];
   buffer[blockSize - 1] = '\0';
   strncpy(buffer, str, blockSize - 1);
-
   stream.seekp(k*blockSize, ios::beg);
   stream.write(buffer, blockSize);
   stream.flush();

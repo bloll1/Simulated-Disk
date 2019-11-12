@@ -4,11 +4,11 @@
 #include "VVSSD.h"
 #include "PersistentArray.h"
 #include <string>
-
+#include <vector>
 class RAMVSSD
 : public VVSSD {
   public:
-    char * ram;
+    std::vector<std::string> ram;
     unsigned int block_s, block_c;
 
     RAMVSSD(unsigned int block_size, unsigned int block_count,
