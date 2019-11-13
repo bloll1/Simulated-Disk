@@ -29,6 +29,8 @@ virtual DiskStatus write(blocknumber_t sector, void * buffer);
 
 virtual DiskStatus sync();
 
+DiskStatus ds = DiskStatus::NOT_READY;
+
 };
 
 #endif

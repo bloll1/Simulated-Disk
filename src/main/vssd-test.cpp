@@ -15,8 +15,7 @@
 
 // commented out until they are actually implemented; remove comments
 // as each type of disk is implemented
-//#include "FileVSSD.h"
-//#include "RAMVSSD.h"
+
 
 using namespace std;
 

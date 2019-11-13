@@ -35,9 +35,9 @@ using namespace std;
  *
  * @param fileName
  */
-PersistentArray::PersistentArray(string fileName):
+PersistentArray::PersistentArray(string fileName, bool initialize):
     stream{fileName, ios::in | ios::out | ios::binary} {
-  if (!stream.is_open()) { // it did not already exist...
+  if (!stream.is_open() || initialize) { // it did not already exist...
     stream.open(fileName, ios::in | ios::out | ios::binary | ios::trunc);
     // reopen with ios::trunc; truncate or create as necessary. Already tried
     // to open w/o truncation so we are not clobbering anything
