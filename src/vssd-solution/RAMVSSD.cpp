@@ -70,7 +70,7 @@ DiskStatus RAMVSSD::write(blocknumber_t sector, void * buffer) {
   if (sector < blockCount() && sector >= 0) {
     if (buffer != nullptr) {
     std::string entry((char *) buffer);
-    ram[sector + 2] = entry;
+    ram.at(sector + 2) = entry;
     free(buffer);
     ds = DiskStatus::OK;
     } else {
