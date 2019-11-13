@@ -18,7 +18,7 @@
 class PersistentArray {
 public:
   // constructor
-  PersistentArray(string fileName, bool initialize):
+  PersistentArray(std::string fileName, bool initialize);
   // destructor
   ~PersistentArray();
 

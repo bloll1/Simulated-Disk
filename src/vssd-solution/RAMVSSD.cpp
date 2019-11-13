@@ -8,6 +8,8 @@
 RAMVSSD::RAMVSSD(unsigned int block_size, unsigned int block_count,
                       const std::string & filename, bool initialize) {
 
+
+  ram.resize(block_count + 2);
   for (unsigned int i = 0; i < block_count+2; i++)
     ram.at(i) = "";
 
