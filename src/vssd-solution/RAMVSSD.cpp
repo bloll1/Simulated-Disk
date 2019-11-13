@@ -8,10 +8,10 @@
 RAMVSSD::RAMVSSD(unsigned int block_size, unsigned int block_count,
                       const std::string & filename, bool initialize) {
 
-
-  ram.resize(block_count + 2);
-  for (unsigned int i = 0; i < block_count+2; i++)
-    ram.at(i) = "";
+  std::vector<std::string> tempram(block_count , "");
+  ram = tempram;
+  //for (unsigned int i = 0; i < block_count+2; i++)
+    //ram.at(i) = "";
 
   ram.at(0) = std::to_string(block_size);
   ram.at(1) = std::to_string(block_count);
@@ -22,8 +22,14 @@ RAMVSSD::RAMVSSD(unsigned int block_size, unsigned int block_count,
   ds = DiskStatus::OK;
 }
 
+
+
+
 RAMVSSD::~RAMVSSD() {
 }
+
+
+
 
 
 std::size_t RAMVSSD::blockSize() const {
@@ -33,6 +39,9 @@ std::size_t RAMVSSD::blockSize() const {
   return 0;
 }
 
+
+
+
 std::size_t RAMVSSD::blockCount() const {
   if (ds != DiskStatus::NOT_READY) {
     return block_c;
@@ -40,9 +49,18 @@ std::size_t RAMVSSD::blockCount() const {
   return 0;
 }
 
+
+
+
+
 DiskStatus RAMVSSD::status() const {
   return ds;
 }
+
+
+
+
+
 
 DiskStatus RAMVSSD::read(blocknumber_t sector, void * buffer) {
   if (sector < blockCount() && sector >= 0) {
@@ -66,11 +84,18 @@ DiskStatus RAMVSSD::read(blocknumber_t sector, void * buffer) {
 
 
 
+
+
+
+
 DiskStatus RAMVSSD::write(blocknumber_t sector, void * buffer) {
   if (sector < blockCount() && sector >= 0) {
     if (buffer != nullptr) {
     std::string entry((char *) buffer);
     ram.at(sector + 2) = entry;
+    for (size_t i = 0; i < ram.capacity(); i++) {
+      std::cerr << "RAM [" << i << "] : " << ram.at(i) << '\n';
+    }
     free(buffer);
     ds = DiskStatus::OK;
     } else {
@@ -83,6 +108,12 @@ DiskStatus RAMVSSD::write(blocknumber_t sector, void * buffer) {
   }
   return ds;
 }
+
+
+
+
+
+
 
 
 DiskStatus RAMVSSD::sync() {
