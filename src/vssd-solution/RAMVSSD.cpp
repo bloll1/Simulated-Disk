@@ -1,8 +1,18 @@
+//@Author: Conor M Golden
+//@Email: Goldencm203@potsdam.edu
+
 #include "RAMVSSD.h"
 
-#include <stdio.h>
-#include <cstring>
-#include <iostream>
+/*RAMVSSD Constructor:: initializes a new vector and sets the global vector to
+*  it. Then for metadata the first two blocks of the ram vector contain the
+*  size of each block and the count of all total blocks. These variables are then
+*  stored globally in the header (block_s/block_c). Finally we set the DiskStatus
+*  to OK signifiying that the disk is ready.
+*  @param - block_size: the size of each block of data
+*  @param - block_count: the total number of blocks in the disk
+*  @param - filename: (unused)
+*  @param - initialize: (unused) (the disk is always new)
+*/
 
 
 RAMVSSD::RAMVSSD(unsigned int block_size, unsigned int block_count,
@@ -10,11 +20,9 @@ RAMVSSD::RAMVSSD(unsigned int block_size, unsigned int block_count,
 
   std::vector<std::string> tempram(block_count , "");
   ram = tempram;
-  //for (unsigned int i = 0; i < block_count+2; i++)
-    //ram.at(i) = "";
 
-  ram.at(0) = std::to_string(block_size);
-  ram.at(1) = std::to_string(block_count);
+  ram[0] = std::to_string(block_size);
+  ram[1] = std::to_string(block_count);
 
   block_s = block_size;
   block_c = block_count;
@@ -25,12 +33,18 @@ RAMVSSD::RAMVSSD(unsigned int block_size, unsigned int block_count,
 
 
 
+/*RAMVSSD Deconstructor:: doesn't do anything since theres no pointers
+*  to free
+*/
+
 RAMVSSD::~RAMVSSD() {
 }
 
 
 
-
+/*blockSize:: Returns the size of each block(block_s in the header) unless
+*  the disk is currently set to NOT_READY
+*/
 
 std::size_t RAMVSSD::blockSize() const {
   if (ds != DiskStatus::NOT_READY) {
@@ -40,7 +54,9 @@ std::size_t RAMVSSD::blockSize() const {
 }
 
 
-
+/*blockCount:: Returns the total # of blocks(block_c in the header) unless
+*  the disk is currently set to NOT_READY
+*/
 
 std::size_t RAMVSSD::blockCount() const {
   if (ds != DiskStatus::NOT_READY) {
@@ -51,7 +67,8 @@ std::size_t RAMVSSD::blockCount() const {
 
 
 
-
+/*status:: Returns the ds variable in the header(AKA the current DiskStatus)
+*/
 
 DiskStatus RAMVSSD::status() const {
   return ds;
@@ -60,7 +77,13 @@ DiskStatus RAMVSSD::status() const {
 
 
 
-
+/*read:: reads the desired sector from the ram vector if the sector is below
+*  or out of bounds of the vector the DiskStatus is set to BLOCK_OUT_OF_RANGE
+*  and a error is printed to the user. If the buffer passed in is a nullptr the
+*  DiskStatus is set to error and the corresponding message is printed.
+*  @param - sector: the desired sector to access
+*  @param - buffer: the pointer the data will be set to from the ram sector
+*/
 
 DiskStatus RAMVSSD::read(blocknumber_t sector, void * buffer) {
   if (sector < blockCount() && sector >= 0) {
@@ -85,17 +108,19 @@ DiskStatus RAMVSSD::read(blocknumber_t sector, void * buffer) {
 
 
 
-
-
+/*write:: writes the desired sector from the ram vector if the sector is below
+*  or out of bounds of the vector the DiskStatus is set to BLOCK_OUT_OF_RANGE
+*  and a error is printed to the user. If the buffer set is a nullptr the
+*  DiskStatus is set to error and the corresponding message is printed.
+*  @param - sector: the desired sector to access
+*  @param - buffer: the pointer the data will be read from and set in the disk
+*/
 
 DiskStatus RAMVSSD::write(blocknumber_t sector, void * buffer) {
   if (sector < blockCount() && sector >= 0) {
     if (buffer != nullptr) {
     std::string entry((char *) buffer);
     ram.at(sector + 2) = entry;
-    for (size_t i = 0; i < ram.capacity(); i++) {
-      std::cerr << "RAM [" << i << "] : " << ram.at(i) << '\n';
-    }
     free(buffer);
     ds = DiskStatus::OK;
     } else {
@@ -114,7 +139,8 @@ DiskStatus RAMVSSD::write(blocknumber_t sector, void * buffer) {
 
 
 
-
+/*sync:: currently returns DiskStatus::OK
+*/
 
 DiskStatus RAMVSSD::sync() {
   return DiskStatus::OK;

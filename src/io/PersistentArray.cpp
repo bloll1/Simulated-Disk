@@ -1,3 +1,8 @@
+//@Author: Conor M Golden
+//@Email: Goldencm203@potsdam.edu
+// <note i did not know wether i should put ID blocks on these since I edited them
+// feedback would be appreciated on the proper way to push ID blocks on used code>
+
 #include <cstring>
 #include "PersistentArray.h"
 #include <iostream>
@@ -71,9 +76,22 @@ size_t PersistentArray::length(size_t blockSize) {
   return stream.tellg() / blockSize;
 }
 
+
+/*flush_stream:: flushes the buffer in the stream out to the current file
+*/
 void PersistentArray::flush_stream() {
   stream.flush();
 }
+
+/*write_k:: creates a buffer array the size of a blcok and pads the last element
+*  with a null terminator. Then we copy the passed in str to that buffer. Finally
+*  the seekp function is called on the stream to set the pointer to sector and we
+*  write that buffer to that poisition with the block size. We flush the stream
+*  just in case anything is left over.
+*  @param - k: the desired sector to write too on the disk
+*  @param - str: the buffer we want to write to the disk
+*  @param - blockSize: the size of a block
+*/
 
 void PersistentArray::write_k(size_t k, char * str, size_t blockSize) {
   char buffer[blockSize];
@@ -84,13 +102,15 @@ void PersistentArray::write_k(size_t k, char * str, size_t blockSize) {
   stream.flush();
 }
 
-/**
- * Read the k-th record of size 40 from the stream. No error checking
- * is done on k here. It has to be valid before the call.
- *
- * @param k number of the record to fetch; [0, length] (note double closed)
- * @param char
- */
+/*read_k:: creates a buffer array the size of a blcok and copies the oldbuffer to
+*  that array. Then we set the pointer in the stream to the desired block and copy
+*  that block onto the buffer. Lastly a new pointer to a char is created and the
+*  new data is copied onto it to be returned
+*  @param - k: the desired sector to write too on the disk
+*  @param - str: the buffer we want to read to on the disk
+*  @param - blockSize: the size of a block
+*/
+
 char * PersistentArray::read_k(size_t k, char * oldbuffer, size_t blockSize) {
   char str[blockSize];
   strncpy(str, oldbuffer, blockSize);
@@ -99,5 +119,4 @@ char * PersistentArray::read_k(size_t k, char * oldbuffer, size_t blockSize) {
   char * buffer = new char[blockSize + 1];
   strncpy(buffer, str, blockSize);
   return buffer;
-  //std::cout << "ReadBuffer: " << buffer << '\n';
 }

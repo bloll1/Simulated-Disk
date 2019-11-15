@@ -1,3 +1,8 @@
+//@Author: Conor M Golden
+//@Email: Goldencm203@potsdam.edu
+// <note i did not know wether i should put ID blocks on these since I edited them
+// feedback would be appreciated on the proper way to push ID blocks on used code>
+
 #ifndef PERSISTENTARRAY_H
   #define PERSISTENTARRAY_H
 /*
@@ -25,16 +30,15 @@ public:
   // get the length (in records) of the array
   size_t length(size_t blockSize);
 
-  // add a new element at the end
-  //void add(const char * str);
+  // writes an element to the array
   void write_k(size_t k, char * str, size_t blockSize);
 
+  //reads the element in the array
   char * read_k(size_t k, char * oldbuffer, size_t blockSize);
 
+  //flushes the stream out to the file
   void flush_stream();
 private:
-  // the internal routines that do the real work.
-
 
   // the stream
   std::fstream stream;
